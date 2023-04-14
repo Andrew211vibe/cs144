@@ -4,74 +4,87 @@
 
 using namespace std;
 
-ByteStream::ByteStream( uint64_t capacity ) : capacity_( capacity ) {}
+ByteStream::ByteStream( uint64_t capacity ) : capacity_(capacity), queue_(),
+  close_(false), written_bytes_(0), readed_bytes_(0), error_(false) {}
 
 void Writer::push( string data )
 {
   // Your code here.
-  (void)data;
+  uint64_t write_size = min(data.length(), available_capacity());
+  written_bytes_ += write_size;
+  for (uint64_t i = 0; i < write_size; i ++)
+    queue_.push(data[i]);
 }
 
 void Writer::close()
 {
   // Your code here.
+  close_ = true;
 }
 
 void Writer::set_error()
 {
   // Your code here.
+  error_ = true;
 }
 
 bool Writer::is_closed() const
 {
   // Your code here.
-  return {};
+  return close_;
 }
 
 uint64_t Writer::available_capacity() const
 {
   // Your code here.
-  return {};
+  return capacity_ - queue_.size();
 }
 
 uint64_t Writer::bytes_pushed() const
 {
   // Your code here.
-  return {};
+  return written_bytes_;
 }
 
-string_view Reader::peek() const
+string Reader::peek() const
 {
   // Your code here.
-  return {};
+  std::string s;
+  string_view sv;
+  if (queue_.size())
+    s += queue_.front();
+  return s;
 }
 
 bool Reader::is_finished() const
 {
   // Your code here.
-  return {};
+  return queue_.empty() && close_;
 }
 
 bool Reader::has_error() const
 {
   // Your code here.
-  return {};
+  return error_;
 }
 
 void Reader::pop( uint64_t len )
 {
   // Your code here.
-  (void)len;
+  uint64_t read_size = min(len, queue_.size());
+  readed_bytes_ += read_size;
+  for (uint64_t i = 0; i < read_size; i ++)
+    queue_.pop();
 }
 
 uint64_t Reader::bytes_buffered() const
 {
   // Your code here.
-  return {};
+  return queue_.size();
 }
 
 uint64_t Reader::bytes_popped() const
 {
   // Your code here.
-  return {};
+  return readed_bytes_;
 }

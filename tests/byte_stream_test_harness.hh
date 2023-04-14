@@ -68,7 +68,7 @@ struct Peek : public Expectation<ByteStream>
   void execute( ByteStream& bs ) const override
   {
     const ByteStream orig = bs;
-    std::string got;
+    std::string got = "";
 
     while ( bs.reader().bytes_buffered() ) {
       auto peeked = bs.reader().peek();
