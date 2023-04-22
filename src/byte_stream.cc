@@ -4,16 +4,17 @@
 
 using namespace std;
 
-ByteStream::ByteStream( uint64_t capacity ) : capacity_(capacity), queue_(),
-  close_(false), written_bytes_(0), readed_bytes_(0), error_(false) {}
+ByteStream::ByteStream( uint64_t capacity )
+  : capacity_( capacity ), queue_(), close_( false ), written_bytes_( 0 ), readed_bytes_( 0 ), error_( false )
+{}
 
 void Writer::push( string data )
 {
   // Your code here.
-  uint64_t write_size = min(data.length(), available_capacity());
+  uint64_t write_size = min( data.length(), available_capacity() );
   written_bytes_ += write_size;
-  for (uint64_t i = 0; i < write_size; i ++)
-    queue_.push(data[i]);
+  for ( uint64_t i = 0; i < write_size; i++ )
+    queue_.push( data[i] );
 }
 
 void Writer::close()
@@ -50,8 +51,7 @@ string Reader::peek() const
 {
   // Your code here.
   std::string s;
-  string_view sv;
-  if (queue_.size())
+  if ( queue_.size() )
     s += queue_.front();
   return s;
 }
@@ -71,9 +71,9 @@ bool Reader::has_error() const
 void Reader::pop( uint64_t len )
 {
   // Your code here.
-  uint64_t read_size = min(len, queue_.size());
+  uint64_t read_size = min( len, queue_.size() );
   readed_bytes_ += read_size;
-  for (uint64_t i = 0; i < read_size; i ++)
+  for ( uint64_t i = 0; i < read_size; i++ )
     queue_.pop();
 }
 

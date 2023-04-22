@@ -18,6 +18,7 @@ protected:
   uint64_t written_bytes_;
   uint64_t readed_bytes_;
   bool error_;
+
 public:
   explicit ByteStream( uint64_t capacity );
 
@@ -45,7 +46,7 @@ class Reader : public ByteStream
 {
 public:
   std::string peek() const; // Peek at the next bytes in the buffer
-  void pop( uint64_t len );      // Remove `len` bytes from the buffer
+  void pop( uint64_t len ); // Remove `len` bytes from the buffer
 
   bool is_finished() const; // Is the stream finished (closed and fully popped)?
   bool has_error() const;   // Has the stream had an error?
