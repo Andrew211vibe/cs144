@@ -3,10 +3,12 @@
 #include "byte_stream.hh"
 
 #include <string>
+#include <map>
 
 class Reassembler
 {
 public:
+  Reassembler() : ack_(0), fin_idx_(-10), buf_byte_(0) {}
   /*
    * Insert a new substring to be reassembled into a ByteStream.
    *   `first_index`: the index of the first byte of the substring
@@ -31,4 +33,9 @@ public:
 
   // How many bytes are stored in the Reassembler itself?
   uint64_t bytes_pending() const;
+private:
+  std::map<uint64_t, std::string> buf = std::map<uint64_t, std::string>();
+  uint64_t ack_;
+  uint64_t fin_idx_;
+  uint64_t buf_byte_;
 };
