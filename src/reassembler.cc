@@ -18,7 +18,6 @@ void Reassembler::insert( uint64_t first_index, string data, bool is_last_substr
     push_len = min( data.length(), output.available_capacity() );
     output.push( data.substr( 0, push_len ) );
     ack_ += push_len; // next expect byte
-    // if (!push_len && ack_ == fin_idx_) output.close();
   } else if ( first_index > ack_ ) {
     std::string tmp = data.substr( 0, output.available_capacity() - first_index );
     for ( uint64_t i = first_index, j = 0; j < tmp.length(); j++, i++ )
