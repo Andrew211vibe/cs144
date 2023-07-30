@@ -7,9 +7,10 @@ using namespace std;
 void TCPReceiver::receive( TCPSenderMessage message, Reassembler& reassembler, Writer& inbound_stream )
 {
   // Your code here.
-  if (!is_isn_set_) {
+  if ( !is_isn_set_ ) {
     // drop before SYN
-    if ( !message.SYN ) return;
+    if ( !message.SYN )
+      return;
     isn_ = message.seqno;
     is_isn_set_ = true;
   }
