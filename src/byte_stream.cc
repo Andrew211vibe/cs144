@@ -4,17 +4,20 @@
 
 using namespace std;
 
-ByteStream::ByteStream( uint64_t capacity )
-  : capacity_( capacity ), queue_(), close_( false ), written_bytes_( 0 ), readed_bytes_( 0 ), error_( false )
-{}
+ByteStream::ByteStream( uint64_t capacity ) : capacity_( capacity ) {}
 
 void Writer::push( string data )
 {
   // Your code here.
+  if (available_capacity() == 0 || data.empty()) return;
   uint64_t write_size = min( data.length(), available_capacity() );
+  if (write_size < data.size()) {
+    data.resize( write_size );
+  }
+  buffer_.push( move(data) );
+  if (buffer_.size() == 1) buffer_view_ = buffer_.front();
   written_bytes_ += write_size;
-  for ( uint64_t i = 0; i < write_size; i++ )
-    queue_.push( data[i] );
+  buffer_bytes_ += write_size;
 }
 
 void Writer::close()
@@ -38,7 +41,7 @@ bool Writer::is_closed() const
 uint64_t Writer::available_capacity() const
 {
   // Your code here.
-  return capacity_ - queue_.size();
+  return capacity_ - buffer_bytes_;
 }
 
 uint64_t Writer::bytes_pushed() const
@@ -47,19 +50,16 @@ uint64_t Writer::bytes_pushed() const
   return written_bytes_;
 }
 
-string Reader::peek() const
+string_view Reader::peek() const
 {
   // Your code here.
-  std::string s;
-  if ( queue_.size() )
-    s += queue_.front();
-  return s;
+  return buffer_view_;
 }
 
 bool Reader::is_finished() const
 {
   // Your code here.
-  return queue_.empty() && close_;
+  return buffer_.empty() && close_;
 }
 
 bool Reader::has_error() const
@@ -71,16 +71,29 @@ bool Reader::has_error() const
 void Reader::pop( uint64_t len )
 {
   // Your code here.
-  uint64_t read_size = min( len, queue_.size() );
-  readed_bytes_ += read_size;
-  for ( uint64_t i = 0; i < read_size; i++ )
-    queue_.pop();
+  if (len > bytes_buffered()) return;
+
+  while (len > 0) {
+    auto sz = buffer_view_.size();
+    if (len >= sz) {
+      len -= sz;
+      buffer_.pop();
+      buffer_view_ = buffer_.front();
+      buffer_bytes_ -= sz;
+      readed_bytes_ += sz;
+    } else {
+      buffer_view_.remove_prefix( len );
+      buffer_bytes_ -= len;
+      readed_bytes_ += len;
+      return;
+    }
+  }
 }
 
 uint64_t Reader::bytes_buffered() const
 {
   // Your code here.
-  return queue_.size();
+  return writer().bytes_pushed() - bytes_popped();
 }
 
 uint64_t Reader::bytes_popped() const

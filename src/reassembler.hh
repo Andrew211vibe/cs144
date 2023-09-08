@@ -8,7 +8,6 @@
 class Reassembler
 {
 public:
-  Reassembler() : ack_( 0 ), fin_idx_( -10 ), buf_byte_( 0 ) {}
   /*
    * Insert a new substring to be reassembled into a ByteStream.
    *   `first_index`: the index of the first byte of the substring
@@ -35,8 +34,8 @@ public:
   uint64_t bytes_pending() const;
 
 private:
-  std::map<uint64_t, std::string> buf = std::map<uint64_t, std::string>();
-  uint64_t ack_;
-  uint64_t fin_idx_;
-  uint64_t buf_byte_;
+  std::map<uint64_t, char> buf = std::map<uint64_t, char>();
+  uint64_t ack_ = 0;
+  uint64_t fin_idx_ = -10;
+  uint64_t buf_byte_ = 0;
 };
