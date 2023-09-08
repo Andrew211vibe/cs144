@@ -2,7 +2,7 @@
 
 #include "byte_stream.hh"
 
-#include <map>
+#include <list>
 #include <string>
 
 class Reassembler
@@ -34,8 +34,11 @@ public:
   uint64_t bytes_pending() const;
 
 private:
-  std::map<uint64_t, char> buf = std::map<uint64_t, char>();
-  uint64_t ack_ = 0;
-  uint64_t fin_idx_ = -10;
-  uint64_t buf_byte_ = 0;
+  uint64_t first_unassembled_idx_ { 0 };
+  std::list<std::pair<uint64_t, std::string>> buf {};
+  uint64_t unassembled_bytes_ = 0; // buf中未组合的数据长度
+  bool fin { false };
+
+  void buffer_in(uint64_t first_index, std::string data, bool is_last_substring); // 缓存到buf中
+  void buffer_out(Writer& ouput);
 };
