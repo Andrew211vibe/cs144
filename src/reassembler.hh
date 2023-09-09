@@ -39,6 +39,6 @@ private:
   uint64_t unassembled_bytes_ = 0; // buf中未组合的数据长度
   bool fin { false };
 
-  void buffer_in(uint64_t first_index, std::string data, bool is_last_substring); // 缓存到buf中
-  void buffer_out(Writer& ouput);
+  void buffer_in( uint64_t first_index, std::string data, bool is_last_substring ); // 缓存到buf中
+  void buffer_out( Writer& ouput );
 };

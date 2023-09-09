@@ -9,13 +9,15 @@ ByteStream::ByteStream( uint64_t capacity ) : capacity_( capacity ) {}
 void Writer::push( string data )
 {
   // Your code here.
-  if (available_capacity() == 0 || data.empty()) return;
+  if ( available_capacity() == 0 || data.empty() )
+    return;
   uint64_t write_size = min( data.length(), available_capacity() );
-  if (write_size < data.size()) {
+  if ( write_size < data.size() ) {
     data.resize( write_size );
   }
-  buffer_.push( move(data) );
-  if (buffer_.size() == 1) buffer_view_ = buffer_.front();
+  buffer_.push( move( data ) );
+  if ( buffer_.size() == 1 )
+    buffer_view_ = buffer_.front();
   written_bytes_ += write_size;
   buffer_bytes_ += write_size;
 }
@@ -71,11 +73,12 @@ bool Reader::has_error() const
 void Reader::pop( uint64_t len )
 {
   // Your code here.
-  if (len > bytes_buffered()) return;
+  if ( len > bytes_buffered() )
+    return;
 
-  while (len > 0) {
+  while ( len > 0 ) {
     auto sz = buffer_view_.size();
-    if (len >= sz) {
+    if ( len >= sz ) {
       len -= sz;
       buffer_.pop();
       buffer_view_ = buffer_.front();
