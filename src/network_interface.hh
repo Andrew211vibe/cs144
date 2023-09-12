@@ -10,6 +10,7 @@
 #include <queue>
 #include <unordered_map>
 #include <utility>
+#include <map>
 
 // A "network interface" that connects IP (the internet layer, or network layer)
 // with Ethernet (the network access layer, or link layer).
@@ -41,6 +42,10 @@ private:
   // IP (known as Internet-layer or network-layer) address of the interface
   Address ip_address_;
 
+  std::unordered_map<uint32_t, std::list<InternetDatagram>> inbound_datagrams_ {}; // 记录到目标地址的待发送数据报
+  std::queue<EthernetFrame> outstanding_frames_ {}; // 正在发送帧
+  std::unordered_map<uint32_t, std::pair<EthernetAddress, std::size_t>> ip_to_ethernet_ {}; // ip到以太网地址映射
+  std::unordered_map<uint32_t, std::size_t> arp_time_ {}; // 记录请求目的IP的ARP时间
 public:
   // Construct a network interface with given Ethernet (network-access-layer) and IP (internet-layer)
   // addresses
