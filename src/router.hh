@@ -55,6 +55,17 @@ class Router
   // The router's collection of network interfaces
   std::vector<AsyncNetworkInterface> interfaces_ {};
 
+  struct route_item_
+  {
+    uint32_t route_prefix_ {};
+    uint8_t prefix_length_ {};
+    std::optional<Address> next_hop_;
+    size_t interface_num_ {};
+  }; // 转发表项
+  std::vector<route_item_> forwarding_table_ {}; // 转发表
+
+  static int match_length(uint32_t src, uint32_t dst, uint8_t len); // 计算最长匹配长度
+
 public:
   // Add an interface to the router
   // interface: an already-constructed network interface
